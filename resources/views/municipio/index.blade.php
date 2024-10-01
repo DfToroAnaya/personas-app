@@ -15,7 +15,7 @@
 
     <div class="container">
         <h1>Listado de Comunass</h1>
-        <a href="{{ route('munucipios.create')}}" class="btn btn-success">Add</a>
+        
         <table class="table">
             <thead>
               <tr>
@@ -30,7 +30,7 @@
                 <tr>
                     <th scope="row">{{ $municipio->muni_codi }}</th>
                     <td>{{ $municipio->muni_nomb }}</td>
-                    <td>{{ $municipio->depa_codi }}</td>
+                    <td>{{ $municipio->depa_nomb }}</td>
                     <td><span> Actions </span></td>
                   </tr> 
                 @endforeach
