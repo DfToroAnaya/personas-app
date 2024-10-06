@@ -63,7 +63,11 @@ class DepartamentoController extends Controller
      */
     public function edit(string $id)
     {
-        //
+        $departamento = Departamento::find($id);
+        $paises = DB::table('tb_pais')
+        ->OrderBy('pais_nomb')
+        ->get();
+        return view('departamento.edit', ['departamento' => $departamento, 'paises' => $paises]);
     }
 
     /**
@@ -71,7 +75,16 @@ class DepartamentoController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        //
+        $departamento = new Departamento();
+        $departamento->depa_nomb = $request->name;
+        $departamento->pais_codi = $request->code;
+        $departamento->save();
+
+        $departamentos = DB::table('tb_departamento')
+        ->join('tb_pais', 'tb_departamento.pais_codi', '=', 'tb_pais.pais_codi')
+        ->select('tb_departamento.*', 'tb_pais.pais_nomb' )
+        ->get();
+        return view('departamento.index', ['departamentos' => $departamentos]);
     }
 
     /**
