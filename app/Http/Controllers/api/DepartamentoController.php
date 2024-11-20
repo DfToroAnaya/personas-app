@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Departamento;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Validator;
 
 class DepartamentoController extends Controller
 {
@@ -27,7 +28,7 @@ class DepartamentoController extends Controller
     public function store(Request $request)
     {
         $validate = Validator::make($request->all(), [
-            'depa_nomb' => ['required', 'max:30', 'unique'],
+            'depa_nomb' => ['required', 'max:30', 'unique:tb_departamento'],
             'pais_codi' => ['required', 'numeric', 'min:1']
         ]);
 
@@ -39,10 +40,10 @@ class DepartamentoController extends Controller
         }
 
         $departamento = new Departamento();
-        $departamento->depa_nomb = $request->name;
-        $departamento->pais_codi = $request->code;
+        $departamento->depa_nomb = $request->depa_nomb;
+        $departamento->pais_codi = $request->pais_codi;
         $departamento->save();
-        return json_encode(['departamentos' => $departamentos]);
+        return json_encode(['departamento' => $departamento]);
 
     }
 
@@ -66,11 +67,11 @@ class DepartamentoController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        $departamento = new Departamento();
-        $departamento->depa_nomb = $request->name;
-        $departamento->pais_codi = $request->code;
+        $departamento = Departamento::find($id);
+        $departamento->depa_nomb = $request->depa_nomb;
+        $departamento->pais_codi = $request->pais_codi;
         $departamento->save();
-        return json_encode(['departamentos' => $departamentos]);
+        return json_encode(['departamento' => $departamento]);
     }
 
     /**

@@ -7,6 +7,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use App\Models\Municipio;
 use App\Models\Comuna;
+use Illuminate\Support\Facades\Validator;
+
 
 class MunicipioController extends Controller
 {
@@ -28,7 +30,7 @@ class MunicipioController extends Controller
     public function store(Request $request)
     {
         $validate = Validator::make($request->all(), [
-            'muni_nomb' => ['required', 'max:30', 'unique'],
+            'muni_nomb' => ['required', 'max:30', 'unique:tb_municipio,muni_nomb'],
             'depa_codi' => ['required', 'numeric', 'min:1']
         ]);
 
@@ -40,8 +42,8 @@ class MunicipioController extends Controller
         }
 
         $municipio = new Municipio();
-        $municipio->muni_nomb = $request->name;
-        $municipio->depa_codi = $request->code;
+        $municipio->muni_nomb = $request->muni_nomb;
+        $municipio->depa_codi = $request->depa_codi;
         $municipio->save();
         return json_encode(['municipio' => $municipio]);
     }
@@ -68,8 +70,8 @@ class MunicipioController extends Controller
     public function update(Request $request, string $id)
     {
         $municipio = Municipio::find($id);
-        $municipio->muni_nomb = $request->name;
-        $municipio->depa_codi = $request->code;
+        $municipio->muni_nomb = $request->muni_nomb;
+        $municipio->depa_codi = $request->depa_codi;
         $municipio->save();
         return json_encode(['municipio' => $municipio]);
 
@@ -82,7 +84,7 @@ class MunicipioController extends Controller
     {
         $municipio =Municipio::find($id);
         $municipio->delete();
-        $municipio = DB::table('tb_municipio')
+        $municipios = DB::table('tb_municipio')
         ->join('tb_departamento', 'tb_municipio.depa_codi', '=', 'tb_departamento.depa_codi')
         ->select('tb_municipio.*', 'tb_departamento.depa_nomb')
         ->get();

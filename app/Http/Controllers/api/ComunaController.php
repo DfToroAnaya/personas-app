@@ -6,6 +6,8 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Comuna;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Validator;
+
 
 class ComunaController extends Controller
 {
@@ -28,7 +30,8 @@ class ComunaController extends Controller
     public function store(Request $request)
     {
         $validate = Validator::make($request->all(), [
-            'comu_nomb' => ['required', 'max:30', 'unique'],
+            
+            'comu_nomb' => ['required', 'max:30', 'unique:tb_comuna'],
             'muni_codi' => ['required', 'numeric', 'min:1']
         ]);
 
@@ -40,8 +43,8 @@ class ComunaController extends Controller
         }
 
         $comuna = new Comuna();
-        $comuna->comu_nomb = $request->name;
-        $comuna->muni_codi = $request->code;
+        $comuna->comu_nomb = $request->comu_nomb    ;
+        $comuna->muni_codi = $request->muni_codi;
         $comuna->save();
         return json_encode(['comuna' => $comuna]);
     }
@@ -81,7 +84,7 @@ class ComunaController extends Controller
     {
         $comuna = Comuna::find($id);
         $comuna->delete();
-        $comuna = DB::table('tb_comuna')
+        $comunas = DB::table('tb_comuna')
         ->join('tb_municipio', 'tb_comuna.muni_codi', '=', 'tb_municipio.muni_codi')
         ->select('tb_comuna.*', "tb_municipio.muni_nomb")
         ->get();

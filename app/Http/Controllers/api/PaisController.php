@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use App\Models\Pais;
+use Illuminate\Support\Facades\Validator;
 
 class PaisController extends Controller
 {
@@ -27,7 +28,7 @@ class PaisController extends Controller
     public function store(Request $request)
     {
         $validate = Validator::make($request->all(), [
-            'pais_nomb' => ['required', 'max:30', 'unique'],
+            'pais_nomb' => ['required', 'max:30', 'unique:tb_pais'],
             'pais_codi' => ['required', 'numeric', 'min:1'],
             'pais_capi' => ['required', 'max:30', 'unique']
         ]);
@@ -40,11 +41,11 @@ class PaisController extends Controller
         }
 
         $pais = new Pais();
-        $pais->pais_codi = $request->id; // Asignar el código ingresado por el usuario
-        $pais->pais_nomb = $request->name;
-        $pais->pais_capi = $request->code;
+        $pais->pais_codi = $request->pais_codi; // Asignar el código ingresado por el usuario
+        $pais->pais_nomb = $request->pais_nomb;
+        $pais->pais_capi = $request->pais_capi;
         $pais->save();
-        return json_encode(['paises' => $paises]);
+        return json_encode(['pais' => $pais]);
     }
 
     /**
@@ -68,10 +69,10 @@ class PaisController extends Controller
     public function update(Request $request, string $id)
     {
         $pais = Pais::find($id);
-        $pais->pais_nomb = $request->name;
-        $pais->pais_capi = $request->code;
+        $pais->pais_nomb = $request->pais_capi;
+        $pais->pais_capi = $request->pais_capi;
         $pais->save();
-        return json_encode(['paises'=>$paises]);
+        return json_encode(['pais'=>$pais]);
     }
 
     /**
